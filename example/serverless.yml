@@ -1,0 +1,50 @@
+service: sls-seed-plugin-example
+
+plugins:
+  - serverless-seed-plugin
+
+frameworkVersion: ^2.43.1
+variablesResolutionMode: 20210326
+useDotenv: true
+
+provider:
+  name: aws
+  region: eu-central-1
+  versionFunctions: false
+  stage: staging
+  runtime: nodejs12.x
+  deploymentBucket:
+    name: ${env:DEPLOYMENT_BUCKET}
+
+custom:
+  seed:
+    dynamodb:
+      - table: ${self:custom.tables.todos}
+        data: ${file(./seed/dynamodb.yml)}
+  tables:
+    todos: ${self:service}-${self:provider.stage}-todos
+
+resources:
+  Resources:
+    TodosTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: ${self:custom.tables.todos}
+        # PointInTimeRecoverySpecification:
+        #   PointInTimeRecoveryEnabled: ${file(macros.js):isPointInTimeRecoveryEnabled}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+Outputs:
+  TodosTableName:
+    Value: { 'Ref': 'TodosTable' }
+    Export:
+      Name: ${self:service}-${self:provider.stage}-todos-table-name
+  TodosTableArn:
+    Value: { 'Fn::GetAtt': ['TodosTable', 'Arn'] }
+    Export:
+      Name: ${self:service}-${self:provider.stage}-todos-table-arn
