@@ -1,10 +1,10 @@
 'use strict'
 
-const DynamoDbStorage = require('./storages/dynamodb')
+const DynamoDbResource = require('./resources/dynamodb')
 const BbPromise = require('bluebird')
 
-const storages = {
-	dynamodb: (options) => new DynamoDbStorage(options)
+const resources = {
+	dynamodb: (options) => new DynamoDbResource(options)
 }
 
 class ServerlessSeedPlugin {
@@ -30,7 +30,7 @@ class ServerlessSeedPlugin {
 		this.commands = {
 			seed: {
 				usage:
-					'Seed target AWS storages with file loads using configuration from serverless.yml',
+					'Seed target AWS resource with file loads using configuration from serverless.yml',
 				lifecycleEvents: ['start']
 			}
 		}
@@ -55,17 +55,17 @@ class ServerlessSeedPlugin {
 
 		this.log('Starting seed...')
 
-		for (const [storageName, storageOptions] of Object.entries(options)) {
-			const storage = storages[storageName]
-			if (!storage) {
-				throw new Error(`Unsupported seed storage ${storageName}`)
+		for (const [resourceName, resourceOptions] of Object.entries(options)) {
+			const resource = resources[resourceName]
+			if (!resource) {
+				throw new Error(`Unsupported seed resource ${resourceName}`)
 			}
-			await storage({
+			await resource({
 				baseDir: this.serverless.config.servicePath,
 				provider: this.serverless.getProvider('aws'),
-				options: storageOptions,
+				options: resourceOptions,
 				log: (msg) => {
-					this.log(`${storageName}: ${msg}`)
+					this.log(`${resourceName}: ${msg}`)
 				}
 			}).deploy()
 		}

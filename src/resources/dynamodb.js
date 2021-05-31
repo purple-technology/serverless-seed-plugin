@@ -1,6 +1,6 @@
 'use strict'
 
-class DynamoDbStorage {
+class DynamoDbResource {
 	constructor({ baseDir, provider, options, log }) {
 		this.baseDir = baseDir
 		this.provider = provider
@@ -40,4 +40,4 @@ class DynamoDbStorage {
 	}
 }
 
-module.exports = DynamoDbStorage
+module.exports = DynamoDbResource
