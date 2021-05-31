@@ -1,0 +1,46 @@
+{
+	"name": "@purple/serverless-seed-plugin",
+	"version": "1.0.0",
+	"engines": {
+		"node": ">=14"
+	},
+	"author": "Purple Technology",
+	"description": "Serverless Framework Plugin which seeds the data for AWS resources",
+	"license": "MIT",
+	"main": "src/index.js",
+	"scripts": {
+		"test": "jest",
+		"test:lint": "eslint ./src/**/*.js",
+		"test:lint:fix": "npm run test:lint -- --fix",
+		"version": "",
+		"postversion": "git push && git push --tags && npm publish --access public",
+		"prepare": "husky install"
+	},
+	"homepage": "https://github.com/purple-technology/serverless-seed-plugin#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/purple-technology/serverless-seed-plugin.git"
+	},
+	"bugs": {
+		"url": "https://github.com/purple-technology/serverless-seed-plugin/issues"
+	},
+	"devDependencies": {
+		"@commitlint/cli": "^12.1.4",
+		"@commitlint/config-conventional": "^12.1.4",
+		"eslint": "^7.25.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-prettier": "^3.4.0",
+		"husky": "^6.0.0",
+		"jest": "^27.0.1",
+		"lint-staged": "^10.5.4",
+		"prettier": "^2.2.1"
+	},
+	"lint-staged": {
+		"src/**/*.js": [
+			"eslint"
+		]
+	},
+	"dependencies": {
+		"bluebird": "^3.7.2"
+	}
+}
