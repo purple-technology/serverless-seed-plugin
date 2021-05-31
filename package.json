@@ -1,8 +1,8 @@
 {
 	"name": "@purple/serverless-seed-plugin",
-	"version": "1.0.0",
+	"version": "1.0.0-alpha.1",
 	"engines": {
-		"node": ">=14"
+		"node": ">=12"
 	},
 	"author": "Purple Technology",
 	"description": "Serverless Framework Plugin which seeds the data for AWS resources",
@@ -10,9 +10,11 @@
 	"main": "src/index.js",
 	"scripts": {
 		"test": "jest",
+		"test:coverage": "jest --coverage --collectCoverageFrom=src/**/*.js test",
 		"test:lint": "eslint ./src/**/*.js",
 		"test:lint:fix": "npm run test:lint -- --fix",
 		"version": "",
+		"release": "npm run build && standard-version && git push --follow-tags && npm publish --access public",
 		"postversion": "git push && git push --tags && npm publish --access public",
 		"prepare": "husky install"
 	},
