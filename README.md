@@ -33,12 +33,11 @@ Set up custom data in your `serverless.yml` file.
 custom:
   seed:
     dynamodb:
-      - table: TableName
-        data:
-          - id: 'abc1'
-            name: 'myRecordName1'
-          - id: 'abc2'
-            name: 'myRecordName2'
+      TableId:
+        - id: 'abc1'
+          name: 'myRecordName1'
+        - id: 'abc2'
+          name: 'myRecordName2'
 ```
 
 Or you can follow the code in `./example/` dir.

@@ -1,11 +1,19 @@
 'use strict'
 
 class DynamoDbResource {
-	constructor({ baseDir, provider, options, log }) {
+	constructor({ baseDir, provider, options, log, serverless }) {
 		this.baseDir = baseDir
 		this.provider = provider
 		this.options = options
 		this.log = log
+
+		this.tables = {}
+		for (const [resourceId, resource] of Object.entries(
+			serverless.service.resources.Resources
+		)) {
+			if (resource.Type.toLowerCase() === 'aws::dynamodb::table')
+				this.tables[resourceId] = resource.Properties.TableName
+		}
 
 		const credentials = {
 			...provider.getCredentials(),
@@ -18,14 +26,17 @@ class DynamoDbResource {
 	}
 
 	async deploy() {
-		for (const { table, data } of this.options) {
-			this.log(`Table '${table}' - writing ${data.length} items..`)
+		for (const [tableId, data] of Object.entries(this.options)) {
+			const tableName = this.tables[tableId]
+
+			this.log(`Table '${tableName}' - writing ${data.length} items..`)
+
 			let recordGroup = data.splice(0, 25)
 			while (recordGroup.length > 0) {
 				await this.dynamodb
 					.batchWrite({
 						RequestItems: {
-							[table]: recordGroup.map((record) => ({
+							[tableName]: recordGroup.map((record) => ({
 								PutRequest: {
 									Item: record
 								}
@@ -35,7 +46,8 @@ class DynamoDbResource {
 					.promise()
 				recordGroup = data.splice(0, 25)
 			}
-			this.log(`Table '${table}' - finished!`)
+
+			this.log(`Table '${tableName}' - finished!`)
 		}
 	}
 }

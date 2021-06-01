@@ -19,8 +19,7 @@ provider:
 custom:
   seed:
     dynamodb:
-      - table: ${self:custom.tables.todos}
-        data: ${file(./seed/dynamodb.yml)}
+      TodosTable: ${file(./seed/dynamodb.yml)}
   tables:
     todos: ${self:service}-${self:provider.stage}-todos
 

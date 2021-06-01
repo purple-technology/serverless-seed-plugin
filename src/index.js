@@ -61,6 +61,7 @@ class ServerlessSeedPlugin {
 				throw new Error(`Unsupported seed resource ${resourceName}`)
 			}
 			await resource({
+				serverless: this.serverless,
 				baseDir: this.serverless.config.servicePath,
 				provider: this.serverless.getProvider('aws'),
 				options: resourceOptions,
