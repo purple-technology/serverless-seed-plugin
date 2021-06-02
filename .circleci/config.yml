@@ -18,7 +18,10 @@ jobs:
             - node_modules
       - run:
           name: Run Linter
-          command: npm run test:lint
+          command: npm run lint
+      - run:
+          name: Run Tests
+          command: npm run test
 
 workflows:
   version: 2
