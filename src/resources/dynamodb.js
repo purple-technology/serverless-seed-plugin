@@ -1,9 +1,7 @@
 'use strict'
 
 class DynamoDbResource {
-	constructor({ baseDir, provider, options, log, serverless }) {
-		this.baseDir = baseDir
-		this.provider = provider
+	constructor({ options, log, serverless }) {
 		this.options = options
 		this.log = log
 
@@ -14,6 +12,8 @@ class DynamoDbResource {
 			if (resource.Type.toLowerCase() === 'aws::dynamodb::table')
 				this.tables[resourceId] = resource.Properties.TableName
 		}
+
+		const provider = serverless.getProvider('aws')
 
 		const credentials = {
 			...provider.getCredentials(),
@@ -26,9 +26,11 @@ class DynamoDbResource {
 	}
 
 	async deploy() {
+		if (!this.options) return
+
 		for (const [tableId, data] of Object.entries(this.options)) {
 			const tableName = this.tables[tableId]
-
+			if (!data.length) continue
 			this.log(`Table '${tableName}' - writing ${data.length} items..`)
 
 			let recordGroup = data.splice(0, 25)
