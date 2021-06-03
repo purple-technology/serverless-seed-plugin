@@ -58,7 +58,7 @@ class ServerlessSeedPlugin {
 		for (const [resourceName, resourceOptions] of Object.entries(options)) {
 			const resource = resources[resourceName]
 			if (!resource) {
-				throw new Error(`Unsupported seed resource ${resourceName}`)
+				throw new Error(`Unsupported seed resource '${resourceName}'`)
 			}
 			await resource({
 				serverless: this.serverless,
