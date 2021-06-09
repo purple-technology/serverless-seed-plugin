@@ -2,6 +2,7 @@ service: sls-seed-plugin-example
 
 plugins:
   - serverless-seed-plugin
+  - '@purple/serverless-s3-remover'
 
 frameworkVersion: ^2.43.1
 variablesResolutionMode: 20210326
@@ -20,8 +21,16 @@ custom:
   seed:
     dynamodb:
       TodosTable: ${file(./seed/dynamodb.yml)}
+    cognito:
+      TodosUserPool: ${file(./seed/cognito.yml)}
+    s3:
+      TodosBucket:
+        - ./seed/s3
   tables:
     todos: ${self:service}-${self:provider.stage}-todos
+  remover:
+    buckets:
+      - ${self:service}-${self:provider.stage}-todos
 
 resources:
   Resources:
@@ -38,12 +47,45 @@ resources:
           - AttributeName: id
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
-Outputs:
-  TodosTableName:
-    Value: { 'Ref': 'TodosTable' }
-    Export:
-      Name: ${self:service}-${self:provider.stage}-todos-table-name
-  TodosTableArn:
-    Value: { 'Fn::GetAtt': ['TodosTable', 'Arn'] }
-    Export:
-      Name: ${self:service}-${self:provider.stage}-todos-table-arn
+    TodosUserPool:
+      # <<: *storageResourcePolicy
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: ${self:service}-${self:provider.stage}-todos
+        MfaConfiguration: OFF
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 6
+            RequireLowercase: false
+            RequireNumbers: false
+            RequireSymbols: false
+            RequireUppercase: false
+        AdminCreateUserConfig:
+          AllowAdminCreateUserOnly: false
+        Schema:
+          - Name: mutableClientData
+            AttributeDataType: String
+            Mutable: true
+            StringAttributeConstraints:
+              MinLength: 1
+              MaxLength: 2048
+          - Name: immutableClientData
+            AttributeDataType: String
+            Mutable: false
+            StringAttributeConstraints:
+              MinLength: 1
+              MaxLength: 2048
+    TodosBucket:
+      # <<: *storageResourcePolicy
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:service}-${self:provider.stage}-todos
+  Outputs:
+    TodosTableName:
+      Value: { 'Ref': 'TodosTable' }
+      Export:
+        Name: ${self:service}-${self:provider.stage}-todos-table-name
+    TodosTableArn:
+      Value: { 'Fn::GetAtt': ['TodosTable', 'Arn'] }
+      Export:
+        Name: ${self:service}-${self:provider.stage}-todos-table-arn

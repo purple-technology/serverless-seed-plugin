@@ -11,6 +11,7 @@
 		"seed": "serverless seed"
 	},
 	"devDependencies": {
+		"@purple/serverless-s3-remover": "^0.7.0",
 		"serverless": "^2.43.1",
 		"serverless-seed-plugin": "file:../"
 	}

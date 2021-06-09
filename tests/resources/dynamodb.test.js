@@ -4,7 +4,7 @@ beforeEach(() => {
 
 test('deploy with single item', async () => {
 	const DynamoDbResource = require('../../src/resources/dynamodb')
-	const { DocumentClient, args, record } = require('./../mocks')
+	const { DocumentClient, args, record } = require('./../mocks/dynamodb')
 
 	jest.spyOn(DocumentClient.prototype, 'batchWrite')
 
@@ -33,7 +33,7 @@ test('deploy with single item', async () => {
 
 test('deploy with multiple data', async () => {
 	const DynamoDbResource = require('../../src/resources/dynamodb')
-	const { DocumentClient, args, record } = require('./../mocks')
+	const { DocumentClient, args, record } = require('./../mocks/dynamodb')
 
 	jest.spyOn(DocumentClient.prototype, 'batchWrite')
 

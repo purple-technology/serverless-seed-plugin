@@ -46,22 +46,5 @@ module.exports = {
 	record: {
 		id: 'abc',
 		name: 'myRecordName'
-	},
-	serverless: {
-		configSchemaHandler: {
-			defineCustomProperties: () => null
-		},
-		service: {
-			custom: {
-				seed: {}
-			},
-			resources: {
-				Resources: {}
-			}
-		},
-		cli: {
-			consoleLog: jest.fn()
-		},
-		getProvider: jest.fn()
 	}
 }
