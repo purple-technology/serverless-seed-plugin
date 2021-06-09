@@ -27,7 +27,9 @@ plugins:
 
 ## Usage
 
-Set up custom data in your `serverless.yml` file.
+Set up `custom.seed.<resource>.<options>` in your `serverless.yml` file. You can also follow the code in [./example/](./example) dir.
+
+### DynamoDB
 
 ```yml
 custom:
@@ -38,21 +40,43 @@ custom:
           name: 'myRecordName1'
         - id: 'abc2'
           name: 'myRecordName2'
+```
+
+### Cognito
+
+[x] immutable attributes are set only first time, otherwise update of these attributes is skipped
+[x] `custom:` prefix for custom attributes is required
+[x] every created user has confirmed account status and no confirmation e-mail is sent
+[x] only attributes and password is updated if user exists
+
+```yml
+custom:
+  seed:
     cognito:
       TodosUserPool:
         - username: abc1
           password: passw1
-          attributes: # 'custom:' prefix for custom attributes is required
+          attributes:
             - Name: custom:mutableClientData
               Value: mutableClientData_val
-            - Name: custom:immutableClientData # Set only first time, then skipped
+            - Name: custom:immutableClientData
               Value: immutableClientData_val
         - username: abc2
           password: passw2
           attributes: []
-    s3: # Do not forget to clear all bojects from bucket, before 'serverless remove' called or use https://github.com/purple-technology/serverless-s3-remover
-      TodosBucket:
-        - ./somedir/ # All nested dirs and files will be uploaded
 ```
 
-Or you can follow the code in `./example/` dir.
+### S3
+
+Do not forget to clear all objects from bucket, before `serverless remove` command called or use [our plugin](https://github.com/purple-technology/serverless-s3-remover)
+
+[x] all nested dirs and files will be uploaded
+[x] existing files will be overwritten
+
+```yml
+custom:
+  seed:
+    s3:
+      TodosBucket:
+        - ./somedir/
+```
