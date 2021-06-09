@@ -61,7 +61,7 @@ resources:
             RequireSymbols: false
             RequireUppercase: false
         AdminCreateUserConfig:
-          AllowAdminCreateUserOnly: false
+          AllowAdminCreateUserOnly: true
         Schema:
           - Name: mutableClientData
             AttributeDataType: String
