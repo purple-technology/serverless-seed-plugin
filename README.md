@@ -29,6 +29,8 @@ plugins:
 
 Set up `custom.seed.<resource>.<options>` in your `serverless.yml` file. You can also follow the code in [./example/](./example) dir.
 
+Then run `serverless seed`.
+
 ### DynamoDB
 
 ```yml
