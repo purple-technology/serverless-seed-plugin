@@ -44,10 +44,10 @@ custom:
 
 ### Cognito
 
-[x] immutable attributes are set only first time, otherwise update of these attributes is skipped
-[x] `custom:` prefix for custom attributes is required
-[x] every created user has confirmed account status and no confirmation e-mail is sent
-[x] only attributes and password is updated if user exists
+- [x] immutable attributes are set only first time, otherwise update of these attributes is skipped
+- [x] `custom:` prefix for custom attributes is required
+- [x] every created user has confirmed account status and no confirmation e-mail is sent
+- [x] only attributes and password is updated if user exists
 
 ```yml
 custom:
@@ -70,8 +70,8 @@ custom:
 
 Do not forget to clear all objects from bucket, before `serverless remove` command called or use [our plugin](https://github.com/purple-technology/serverless-s3-remover)
 
-[x] all nested dirs and files will be uploaded
-[x] existing files will be overwritten
+- [x] all nested dirs and files will be uploaded
+- [x] existing files will be overwritten
 
 ```yml
 custom:
