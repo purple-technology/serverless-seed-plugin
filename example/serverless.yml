@@ -48,7 +48,6 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
     TodosUserPool:
-      # <<: *storageResourcePolicy
       Type: AWS::Cognito::UserPool
       Properties:
         UserPoolName: ${self:service}-${self:provider.stage}-todos
@@ -76,7 +75,6 @@ resources:
               MinLength: 1
               MaxLength: 2048
     TodosBucket:
-      # <<: *storageResourcePolicy
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:service}-${self:provider.stage}-todos
