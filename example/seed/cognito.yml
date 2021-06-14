@@ -1,0 +1,9 @@
+- username: abc1
+  password: passw1
+  attributes:
+    - Name: custom:mutableClientData
+      Value: mutableClientData_val
+    - Name: custom:immutableClientData
+      Value: immutableClientData_val
+- username: abc2
+  password: passw2

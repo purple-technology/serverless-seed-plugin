@@ -1,10 +1,14 @@
 'use strict'
 
+const CognitoResource = require('./resources/cognito')
 const DynamoDbResource = require('./resources/dynamodb')
+const S3Resource = require('./resources/s3')
 const BbPromise = require('bluebird')
 
 const resources = {
-	dynamodb: (options) => new DynamoDbResource(options)
+	cognito: (options) => new CognitoResource(options),
+	dynamodb: (options) => new DynamoDbResource(options),
+	s3: (options) => new S3Resource(options)
 }
 
 class ServerlessSeedPlugin {
@@ -49,9 +53,7 @@ class ServerlessSeedPlugin {
 
 	async deploy() {
 		const options = this.serverless.service.custom.seed
-		if (!options) {
-			return this.log('Skipping seed, no options provided')
-		}
+		if (!options) return this.log('Skipping seed, no options provided')
 
 		this.log('Starting seed...')
 
