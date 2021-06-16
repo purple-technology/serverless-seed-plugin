@@ -15,14 +15,14 @@ This plugin seeds the data for AWS resources.
 ## Install
 
 ```sh
-$ npm install --save-dev @purple/serverless-seed-plugin
+$ npm install --save-dev serverless-seed-plugin
 ```
 
 Add the plugin to your `serverless.yml` file.
 
 ```yml
 plugins:
-  - '@purple/serverless-seed-plugin'
+  - serverless-seed-plugin
 ```
 
 ## Usage

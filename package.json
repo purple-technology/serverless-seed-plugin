@@ -1,5 +1,5 @@
 {
-	"name": "@purple/serverless-seed-plugin",
+	"name": "serverless-seed-plugin",
 	"version": "1.0.0-alpha.1",
 	"engines": {
 		"node": ">=12"
