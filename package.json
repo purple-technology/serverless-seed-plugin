@@ -13,8 +13,7 @@
 		"test:coverage": "jest --coverage --collectCoverageFrom=src/**/*.js test",
 		"lint": "eslint ./src/**/*.js",
 		"lint:fix": "npm run lint -- --fix",
-		"version": "",
-		"release": "npm run build && standard-version && git push --follow-tags && npm publish --access public",
+		"release": "git push --follow-tags && npm publish --access public",
 		"postversion": "git push && git push --tags && npm publish --access public",
 		"prepare": "husky install"
 	},
