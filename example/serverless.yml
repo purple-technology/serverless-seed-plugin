@@ -13,7 +13,7 @@ provider:
   region: eu-central-1
   versionFunctions: false
   stage: staging
-  runtime: nodejs12.x
+  runtime: nodejs14.x
   deploymentBucket:
     name: ${env:DEPLOYMENT_BUCKET}
 

@@ -2,7 +2,7 @@
 	"name": "serverless-seed-plugin",
 	"version": "1.0.0-alpha.2",
 	"engines": {
-		"node": ">=12"
+		"node": ">=14"
 	},
 	"author": "Purple Technology",
 	"description": "Serverless Framework Plugin which seeds the data for AWS resources",
