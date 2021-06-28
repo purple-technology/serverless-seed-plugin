@@ -1,6 +1,6 @@
 {
 	"name": "serverless-seed-plugin",
-	"version": "1.0.0-alpha.2",
+	"version": "0.1.0",
 	"engines": {
 		"node": ">=12"
 	},
@@ -13,8 +13,8 @@
 		"test:coverage": "jest --coverage --collectCoverageFrom=src/**/*.js test",
 		"lint": "eslint ./src/**/*.js",
 		"lint:fix": "npm run lint -- --fix",
-		"release": "git push --follow-tags && npm publish --access public",
-		"postversion": "git push && git push --tags && npm publish --access public",
+		"release": "standard-version",
+		"publish": "git push --follow-tags && npm publish --access public",
 		"prepare": "husky install"
 	},
 	"homepage": "https://github.com/purple-technology/serverless-seed-plugin#readme",
@@ -35,7 +35,8 @@
 		"husky": "^6.0.0",
 		"jest": "^27.0.5",
 		"lint-staged": "^11.0.0",
-		"prettier": "^2.3.1"
+		"prettier": "^2.3.1",
+		"standard-version": "^9.3.0"
 	},
 	"lint-staged": {
 		"src/**/*.js": [
