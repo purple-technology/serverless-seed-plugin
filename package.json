@@ -13,8 +13,8 @@
 		"test:coverage": "jest --coverage --collectCoverageFrom=src/**/*.js test",
 		"lint": "eslint ./src/**/*.js",
 		"lint:fix": "npm run lint -- --fix",
-		"release": "standard-version",
-		"publish": "git push --follow-tags && npm publish --access public",
+		"release:changelog": "standard-version",
+		"release:publish": "git push --follow-tags && npm publish --access public",
 		"prepare": "husky install"
 	},
 	"homepage": "https://github.com/purple-technology/serverless-seed-plugin#readme",
