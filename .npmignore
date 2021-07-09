@@ -1,9 +1,14 @@
 .circleci
-.github
-.vscode
 .editorconfig
 .eslintignore
 .eslintrc.js
+.github
+.husky
 .nvmrc
 .prettierrc.js
+.vscode
+commitlint.config.js
 CONTRIBUTING.md
+example
+jest.config.js
+tests
