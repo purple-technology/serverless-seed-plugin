@@ -1,6 +1,6 @@
 {
 	"name": "serverless-seed-plugin",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"engines": {
 		"node": ">=14"
 	},
@@ -10,7 +10,7 @@
 	"main": "src/index.js",
 	"scripts": {
 		"test": "jest",
-		"test:coverage": "jest --coverage --collectCoverageFrom=src/**/*.js test",
+		"test:coverage": "npm run test -- --coverage --collectCoverageFrom=src/**/*.js test",
 		"lint": "eslint ./src/**/*.js",
 		"lint:fix": "npm run lint -- --fix",
 		"release:changelog": "standard-version",
@@ -33,7 +33,7 @@
 		"eslint-plugin-jest": "^24.3.6",
 		"eslint-plugin-prettier": "^3.4.0",
 		"husky": "^6.0.0",
-		"jest": "^27.0.6",
+		"jest": "^27.4.5",
 		"lint-staged": "^11.0.0",
 		"prettier": "^2.3.2",
 		"standard-version": "^9.3.0"
@@ -44,6 +44,7 @@
 		]
 	},
 	"dependencies": {
-		"bluebird": "^3.7.2"
+		"bluebird": "^3.7.2",
+		"copy-dynamodb-table": "^2.2.1"
 	}
 }

@@ -1,16 +1,4 @@
-class DocumentClient {
-	batchWrite() {
-		return {
-			promise: async () => {}
-		}
-	}
-}
-
-class DynamoDB {
-	static get DocumentClient() {
-		return DocumentClient
-	}
-}
+const DynamoDB = require('./classes/DynamoDB')
 
 const awsProvider = {
 	getCredentials: () => null,
@@ -41,7 +29,6 @@ const args = {
 }
 
 module.exports = {
-	DocumentClient,
 	args,
 	record: {
 		id: 'abc',

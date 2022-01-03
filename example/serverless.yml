@@ -12,7 +12,7 @@ provider:
   name: aws
   region: eu-central-1
   versionFunctions: false
-  stage: staging
+  stage: ${env:STAGE}
   runtime: nodejs14.x
   deploymentBucket:
     name: ${env:DEPLOYMENT_BUCKET}
@@ -20,7 +20,14 @@ provider:
 custom:
   seed:
     dynamodb:
-      TodosTable: ${file(./seed/dynamodb.yml)}
+      TodosTable:
+        truncate: true
+        data: ${file(./seed/dynamodb.yml)}
+        clone:
+          table: ${self:service}-prod-todos
+          config:
+            region: eu-central-1
+          recreate: true
     cognito:
       TodosUserPool: ${file(./seed/cognito.yml)}
     s3:
@@ -38,8 +45,6 @@ resources:
       Type: 'AWS::DynamoDB::Table'
       Properties:
         TableName: ${self:custom.tables.todos}
-        # PointInTimeRecoverySpecification:
-        #   PointInTimeRecoveryEnabled: ${file(macros.js):isPointInTimeRecoveryEnabled}
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S

@@ -38,10 +38,19 @@ custom:
   seed:
     dynamodb:
       TableId:
-        - id: 'abc1'
-          name: 'myRecordName1'
-        - id: 'abc2'
-          name: 'myRecordName2'
+        truncate: true # default false
+        clone:
+          table: source-table-name # Clone data from table
+          recreate: true # default false
+          config: # empty by default, for more options see https://github.com/enGMzizo/copy-dynamodb-table#aws-config-for-each-table--cross-region--
+            accessKeyId: AKID
+            secretAccessKey: SECRET
+            region: eu-west-1
+        data:
+          - id: 'abc1'
+            name: 'myRecordName1'
+          - id: 'abc2'
+            name: 'myRecordName2'
 ```
 
 ### Cognito

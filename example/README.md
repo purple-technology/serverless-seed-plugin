@@ -8,11 +8,12 @@ This is an example of Serverless seed plugin usage.
 2. Deploy resources.
 
 ```sh
-$ npm run deploy
+$ npm run deploy-prod
+$ npm run deploy-dev
 ```
 
 3. Edit data in ```./seed`` dir and run plugin.
 
 ```sh
-$ npm run seed
+$ npm run seed-dev
 ```
