@@ -14,6 +14,11 @@ class CognitoIdentityServiceProvider {
 			promise: async () => {}
 		}
 	}
+	adminAddUserToGroup() {
+		return {
+			promise: async () => {}
+		}
+	}
 	listUserPools() {}
 }
 
@@ -66,7 +71,8 @@ module.exports = {
 			password: 'test_password',
 			attributes: [
 				{ Name: 'custom:immutableClientData', Value: 'immutableClientData_val' }
-			]
+			],
+			groups: ['test_group']
 		},
 		{
 			username: 'test_username',

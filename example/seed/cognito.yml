@@ -5,5 +5,7 @@
       Value: mutableClientData_val
     - Name: custom:immutableClientData
       Value: immutableClientData_val
+  groups:
+    - TODOS_GROUP
 - username: abc2
   password: passw2
