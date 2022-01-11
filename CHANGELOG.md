@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/purple-technology/serverless-seed-plugin/compare/v0.1.0...v0.3.0) (2022-01-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* node 14
+* use standard-version as release standard
+
+### Features
+
+* **cognito:** support for groups ([8bbfa66](https://github.com/purple-technology/serverless-seed-plugin/commit/8bbfa66385719201084ef49d0cd7314d7701dadd))
+* **dynamodb:** support for table cloning and Jest upgrade ([e1710ee](https://github.com/purple-technology/serverless-seed-plugin/commit/e1710ee3fcdf360ebf6cf94ce8a5ab42fc196d81))
+
+
+### Bug Fixes
+
+* **dynamodb:** fixed missing required region for default config ([e95098a](https://github.com/purple-technology/serverless-seed-plugin/commit/e95098a7e4ff6d0e1da49a0e0c65dcf6cebf9043))
+
+
+* node 14 ([e0d08cb](https://github.com/purple-technology/serverless-seed-plugin/commit/e0d08cb659bf7c3fd67e8476b4dba90ddeae9539))
+* use standard-version as release standard ([fe23c2f](https://github.com/purple-technology/serverless-seed-plugin/commit/fe23c2fa72342d0f6aedc31752b84ad5e61d4c38))
+
 ## 0.1.0 (2021-06-24)
 
 
