@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.1](https://github.com/purple-technology/serverless-seed-plugin/compare/v0.3.0...v0.3.1) (2022-01-11)
+
+
+### Bug Fixes
+
+* **cognito:** fixed user pool id search for 60+ pools count ([2458321](https://github.com/purple-technology/serverless-seed-plugin/commit/245832162703f19db85e793deca93e57b244922a))
+
 ## [0.3.0](https://github.com/purple-technology/serverless-seed-plugin/compare/v0.1.0...v0.3.0) (2022-01-11)
 
 
