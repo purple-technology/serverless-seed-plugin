@@ -79,6 +79,11 @@ resources:
             StringAttributeConstraints:
               MinLength: 1
               MaxLength: 2048
+    TodosUserPoolGroup:
+      Type: AWS::Cognito::UserPoolGroup
+      Properties:
+        GroupName: TODOS_GROUP
+        UserPoolId: { 'Ref': TodosUserPool }
     TodosBucket:
       Type: AWS::S3::Bucket
       Properties:

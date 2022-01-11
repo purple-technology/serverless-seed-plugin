@@ -37,7 +37,7 @@ class CognitoResource {
 				created: 0,
 				updated: 0
 			}
-			for (const { username, password, attributes } of users) {
+			for (const { username, password, attributes, groups } of users) {
 				try {
 					await this.identityProvider
 						.adminCreateUser({
@@ -70,6 +70,7 @@ class CognitoResource {
 						throw createErr
 					}
 				}
+
 				await this.identityProvider
 					.adminSetUserPassword({
 						Password: password,
@@ -78,6 +79,16 @@ class CognitoResource {
 						Permanent: true
 					})
 					.promise()
+
+				for (const group of groups || []) {
+					await this.identityProvider
+						.adminAddUserToGroup({
+							GroupName: group,
+							UserPoolId: userPoolId,
+							Username: username
+						})
+						.promise()
+				}
 			}
 
 			this.log(
