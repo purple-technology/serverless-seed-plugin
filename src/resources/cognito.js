@@ -116,7 +116,7 @@ class CognitoResource {
 		pools.push(...result.UserPools.filter((pool) => pool.Name === name))
 
 		if (result.NextToken)
-			return await this._findUserPoolByName(name, result.NextToken)
+			return await this._findUserPoolIdByName(name, result.NextToken)
 
 		switch (pools.length) {
 			case 0:
