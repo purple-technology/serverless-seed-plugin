@@ -14,7 +14,7 @@ describe('#cognito', () => {
 		jest
 			.spyOn(CognitoIdentityServiceProvider.prototype, 'adminCreateUser')
 			.mockImplementationOnce(() => ({
-				promise: () => { }
+				promise: () => {}
 			}))
 			.mockImplementationOnce(() => {
 				const err = new Error()
@@ -29,6 +29,25 @@ describe('#cognito', () => {
 						{
 							Name: 'test_user_pool',
 							Id: 'TestUserPoolId'
+						},
+						{
+							Name: 'unwanted_user_pool',
+							Id: 'UnwantedUserPoolId'
+						}
+					],
+					NextToken: 'test_next_token'
+				})
+			}))
+			.mockImplementationOnce(() => ({
+				promise: async () => ({
+					UserPools: [
+						{
+							Name: 'test_user_pool',
+							Id: 'TestUserPoolId'
+						},
+						{
+							Name: 'unwanted_user_pool',
+							Id: 'UnwantedUserPoolId'
 						}
 					]
 				})
@@ -59,7 +78,18 @@ describe('#cognito', () => {
 
 		expect(
 			CognitoIdentityServiceProvider.prototype.listUserPools
-		).toHaveBeenCalledTimes(1)
+		).toHaveBeenCalledTimes(2)
+		expect(
+			CognitoIdentityServiceProvider.prototype.listUserPools
+		).toHaveBeenNthCalledWith(1, {
+			MaxResults: 60
+		})
+		expect(
+			CognitoIdentityServiceProvider.prototype.listUserPools
+		).toHaveBeenNthCalledWith(2, {
+			NextToken: 'test_next_token',
+			MaxResults: 60
+		})
 		expect(
 			CognitoIdentityServiceProvider.prototype.adminCreateUser
 		).toHaveBeenCalledTimes(2)
