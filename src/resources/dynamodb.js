@@ -123,7 +123,9 @@ class DynamoDbResource {
 			},
 			source: {
 				tableName: table,
-				config: config || {}
+				config: config || {
+					region: this.region
+				}
 			},
 			destination: {
 				tableName: targetTable
