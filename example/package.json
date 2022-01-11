@@ -6,9 +6,13 @@
 		"node": ">= 12.16.1"
 	},
 	"scripts": {
-		"deploy": "serverless deploy",
-		"remove": "serverless remove",
-		"seed": "serverless seed"
+		"deploy": "npm run deploy-prod && npm run deploy-dev",
+		"deploy-dev": "STAGE=dev serverless deploy",
+		"deploy-prod": "STAGE=prod serverless deploy",
+		"remove": "npm run remove-dev && npm run remove-prod",
+		"remove-dev": "STAGE=dev serverless remove",
+		"remove-prod": "STAGE=prod serverless remove",
+		"seed-dev": "STAGE=dev serverless seed"
 	},
 	"devDependencies": {
 		"@purple/serverless-s3-remover": "^0.7.0",
