@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.2](https://github.com/purple-technology/serverless-seed-plugin/compare/v0.3.1...v0.3.2) (2022-01-12)
+
+
+### Bug Fixes
+
+* **cognito:** fixed seed for accounts with lot of user pools ([#73](https://github.com/purple-technology/serverless-seed-plugin/issues/73)) ([1f20c6f](https://github.com/purple-technology/serverless-seed-plugin/commit/1f20c6f234af5217ab30692c65254342e44b7a71))
+* **dynamodb:** use all primary keys ([#74](https://github.com/purple-technology/serverless-seed-plugin/issues/74)) ([aa6df2e](https://github.com/purple-technology/serverless-seed-plugin/commit/aa6df2e3fb6691ec00bb5704ba750e64ea65fe9f))
+
 ### [0.3.1](https://github.com/purple-technology/serverless-seed-plugin/compare/v0.3.0...v0.3.1) (2022-01-11)
 
 
