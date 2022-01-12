@@ -3,7 +3,8 @@ const DYNAMODB_BATCH_LIMIT = 25
 const cloneRecords = (record, count) =>
 	new Array(count).fill(record).map((item, index) => ({
 		id: item.id + index,
-		name: item.name + index
+		name: item.name + index,
+		type: item.type + index
 	}))
 
 const DynamoDB = require('./../mocks/classes/DynamoDB')
@@ -162,7 +163,8 @@ describe('#dynamodb', () => {
 				table_name: records.slice(0, DYNAMODB_BATCH_LIMIT).map((item) => ({
 					DeleteRequest: {
 						Key: {
-							id: item.id
+							id: item.id,
+							type: item.type
 						}
 					}
 				}))
@@ -173,7 +175,8 @@ describe('#dynamodb', () => {
 				table_name: records.slice(-1).map((item) => ({
 					DeleteRequest: {
 						Key: {
-							id: item.id
+							id: item.id,
+							type: item.type
 						}
 					}
 				}))

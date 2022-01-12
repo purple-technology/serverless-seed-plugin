@@ -10,11 +10,9 @@ const getPutRequest = (item) => ({
 	}
 })
 
-const getDeleteRequest = (item) => ({
+const getDeleteRequest = (item, keys) => ({
 	DeleteRequest: {
-		Key: {
-			id: item.id
-		}
+		Key: Object.fromEntries(keys.map((key) => [key, item[key]]))
 	}
 })
 
@@ -28,7 +26,12 @@ class DynamoDbResource {
 			serverless.service.resources.Resources
 		)) {
 			if (resource.Type.toLowerCase() === 'aws::dynamodb::table')
-				this.tables[resourceId] = resource.Properties.TableName
+				this.tables[resourceId] = {
+					tableName: resource.Properties.TableName,
+					tableKeys: (resource.Properties.KeySchema || []).map(
+						(attr) => attr.AttributeName
+					)
+				}
 		}
 
 		const provider = serverless.getProvider('aws')
@@ -55,7 +58,7 @@ class DynamoDbResource {
 		for (const [tableId, options] of Object.entries(this.options)) {
 			const { data, clone, truncate } = options
 
-			const tableName = this.tables[tableId]
+			const { tableName, tableKeys } = this.tables[tableId]
 			if (!tableName) {
 				throw new Error(`Table name not found for table id ${tableId}`)
 			}
@@ -68,7 +71,7 @@ class DynamoDbResource {
 			if (truncate && (!clone || !clone.recreate)) {
 				this.log(`Table '${tableName}' - truncate table..`)
 				const items = await this._getAllItems(tableName)
-				await this._batchWrite(tableName, items, getDeleteRequest)
+				await this._batchWrite(tableName, items, getDeleteRequest, tableKeys)
 			}
 
 			if (clone) {
@@ -134,13 +137,13 @@ class DynamoDbResource {
 		})
 	}
 
-	async _batchWrite(tableName, data, mapCb) {
+	async _batchWrite(tableName, data, mapCb, keys) {
 		let recordGroup = data.splice(0, DYNAMODB_BATCH_LIMIT)
 		while (recordGroup.length > 0) {
 			await this.documentClient
 				.batchWrite({
 					RequestItems: {
-						[tableName]: recordGroup.map((record) => mapCb(record))
+						[tableName]: recordGroup.map((record) => mapCb(record, keys))
 					}
 				})
 				.promise()
