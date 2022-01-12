@@ -19,7 +19,17 @@ const args = {
 					TableLogicalId: {
 						Type: 'AWS::DynamoDB::Table',
 						Properties: {
-							TableName: 'table_name'
+							TableName: 'table_name',
+							KeySchema: [
+								{
+									AttributeName: 'id',
+									KeyType: 'HASH'
+								},
+								{
+									AttributeName: 'type',
+									KeyType: 'RANGE'
+								}
+							]
 						}
 					}
 				}
@@ -32,6 +42,7 @@ module.exports = {
 	args,
 	record: {
 		id: 'abc',
-		name: 'myRecordName'
+		name: 'myRecordName',
+		type: 'myRecordType'
 	}
 }
