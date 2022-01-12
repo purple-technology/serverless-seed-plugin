@@ -6,10 +6,21 @@ describe('#cognito', () => {
 	it('deploy with multiple users', async () => {
 		const CognitoResource = require('../../src/resources/cognito')
 		const {
+			awsProvider,
 			CognitoIdentityServiceProvider,
 			args,
 			users
 		} = require('../mocks/cognito')
+
+		jest
+			.spyOn(awsProvider.naming, 'getStackName')
+			.mockImplementationOnce(() => 'test_stack_name')
+
+		jest.spyOn(awsProvider, 'request').mockImplementationOnce(async () => ({
+			StackResourceDetail: {
+				PhysicalResourceId: 'TestUserPoolId'
+			}
+		}))
 
 		jest
 			.spyOn(CognitoIdentityServiceProvider.prototype, 'adminCreateUser')
@@ -21,37 +32,6 @@ describe('#cognito', () => {
 				err.code = 'UsernameExistsException'
 				throw err
 			})
-		jest
-			.spyOn(CognitoIdentityServiceProvider.prototype, 'listUserPools')
-			.mockImplementationOnce(() => ({
-				promise: async () => ({
-					UserPools: [
-						{
-							Name: 'test_user_pool',
-							Id: 'TestUserPoolId'
-						},
-						{
-							Name: 'unwanted_user_pool',
-							Id: 'UnwantedUserPoolId'
-						}
-					],
-					NextToken: 'test_next_token'
-				})
-			}))
-			.mockImplementationOnce(() => ({
-				promise: async () => ({
-					UserPools: [
-						{
-							Name: 'test_user_pool',
-							Id: 'TestUserPoolId'
-						},
-						{
-							Name: 'unwanted_user_pool',
-							Id: 'UnwantedUserPoolId'
-						}
-					]
-				})
-			}))
 		jest.spyOn(
 			CognitoIdentityServiceProvider.prototype,
 			'adminUpdateUserAttributes'
@@ -76,20 +56,14 @@ describe('#cognito', () => {
 			"UserPool 'test_user_pool' - 1 created, 1 updated!"
 		)
 
-		expect(
-			CognitoIdentityServiceProvider.prototype.listUserPools
-		).toHaveBeenCalledTimes(2)
-		expect(
-			CognitoIdentityServiceProvider.prototype.listUserPools
-		).toHaveBeenNthCalledWith(1, {
-			MaxResults: 60
-		})
-		expect(
-			CognitoIdentityServiceProvider.prototype.listUserPools
-		).toHaveBeenNthCalledWith(2, {
-			NextToken: 'test_next_token',
-			MaxResults: 60
-		})
+		expect(awsProvider.naming.getStackName).toHaveBeenCalledTimes(1)
+		expect(awsProvider.request).toHaveBeenCalledTimes(1)
+		expect(awsProvider.request).toHaveBeenNthCalledWith(
+			1,
+			'CloudFormation',
+			'describeStackResource',
+			{ LogicalResourceId: 'UserPooLogicalId', StackName: 'test_stack_name' }
+		)
 		expect(
 			CognitoIdentityServiceProvider.prototype.adminCreateUser
 		).toHaveBeenCalledTimes(2)

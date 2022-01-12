@@ -19,12 +19,15 @@ class CognitoIdentityServiceProvider {
 			promise: async () => {}
 		}
 	}
-	listUserPools() {}
 }
 
 const awsProvider = {
 	getCredentials: () => null,
 	getRegion: () => null,
+	naming: {
+		getStackName: () => null
+	},
+	request: () => null,
 	sdk: {
 		CognitoIdentityServiceProvider
 	}
@@ -63,6 +66,7 @@ const args = {
 }
 
 module.exports = {
+	awsProvider,
 	CognitoIdentityServiceProvider,
 	args,
 	users: [

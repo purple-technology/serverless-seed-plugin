@@ -4,7 +4,7 @@ class CognitoResource {
 	constructor({ options, log, serverless }) {
 		this.options = options
 		this.log = log
-		const provider = serverless.getProvider('aws')
+		this.provider = serverless.getProvider('aws')
 		this.resources = serverless.service.resources.Resources
 
 		this.userPools = {}
@@ -14,23 +14,24 @@ class CognitoResource {
 		}
 
 		const credentials = {
-			...provider.getCredentials(),
-			region: provider.getRegion()
+			...this.provider.getCredentials(),
+			region: this.provider.getRegion()
 		}
 
-		this.identityProvider = new provider.sdk.CognitoIdentityServiceProvider({
-			...credentials
-		})
+		this.identityProvider =
+			new this.provider.sdk.CognitoIdentityServiceProvider({
+				...credentials
+			})
 	}
 
 	async deploy() {
 		if (!this.options) return
 
-		for (const [userPoolResourceId, users] of Object.entries(this.options)) {
+		for (const [logicalResourceId, users] of Object.entries(this.options)) {
 			if (!users.length) continue
 
-			const userPoolName = this.userPools[userPoolResourceId]
-			const userPoolId = await this._findUserPoolIdByName(userPoolName)
+			const userPoolName = this.userPools[logicalResourceId]
+			const userPoolId = await this._findUserPoolId(logicalResourceId)
 
 			this.log(`UserPool '${userPoolName}' - seeding ${users.length} users..`)
 			const stats = {
@@ -54,7 +55,7 @@ class CognitoResource {
 					if (createErr.code === 'UsernameExistsException') {
 						const attrToUpdate = (attributes || []).filter(
 							(attr) =>
-								!this._isAttributeImmutable(userPoolResourceId, attr.Name)
+								!this._isAttributeImmutable(logicalResourceId, attr.Name)
 						)
 						if (attrToUpdate.length > 0) {
 							await this.identityProvider
@@ -97,35 +98,23 @@ class CognitoResource {
 		}
 	}
 
-	_isAttributeImmutable(resourceId, name) {
-		return !this.resources[resourceId].Properties.Schema.find(
+	_isAttributeImmutable(logicalResourceId, name) {
+		return !this.resources[logicalResourceId].Properties.Schema.find(
 			(attr) =>
 				(attr.Name == name || `custom:${attr.Name}` == name) && attr.Mutable
 		)
 	}
 
-	async _findUserPoolIdByName(name, nextToken) {
-		const params = {
-			MaxResults: 60
-		}
-
-		const pools = []
-		if (nextToken) params.NextToken = nextToken
-
-		const result = await this.identityProvider.listUserPools(params).promise()
-		pools.push(...result.UserPools.filter((pool) => pool.Name === name))
-
-		if (result.NextToken)
-			return await this._findUserPoolIdByName(name, result.NextToken)
-
-		switch (pools.length) {
-			case 0:
-				return null
-			case 1:
-				return pools[0].Id
-			default:
-				throw new Error(`Found more than one pool named '${name}'`)
-		}
+	async _findUserPoolId(logicalResourceId) {
+		const result = await this.provider.request(
+			'CloudFormation',
+			'describeStackResource',
+			{
+				LogicalResourceId: logicalResourceId,
+				StackName: this.provider.naming.getStackName()
+			}
+		)
+		return result.StackResourceDetail.PhysicalResourceId
 	}
 }
 
