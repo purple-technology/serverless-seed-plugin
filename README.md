@@ -38,6 +38,7 @@ custom:
   seed:
     dynamodb:
       TableId:
+        emptyOnly: true # default false - seed only if target is empty
         truncate: true # default false
         clone:
           table: source-table-name # Clone data from table
@@ -65,16 +66,18 @@ custom:
   seed:
     cognito:
       TodosUserPool:
-        - username: abc1
-          password: passw1
-          attributes:
-            - Name: custom:mutableClientData
-              Value: mutableClientData_val
-            - Name: custom:immutableClientData
-              Value: immutableClientData_val
-        - username: abc2
-          password: passw2
-          attributes: []
+        emptyOnly: true # default false - seed only if target is empty
+        data:
+          - username: abc1
+            password: passw1
+            attributes:
+              - Name: custom:mutableClientData
+                Value: mutableClientData_val
+              - Name: custom:immutableClientData
+                Value: immutableClientData_val
+          - username: abc2
+            password: passw2
+            attributes: []
 ```
 
 ### S3
@@ -89,5 +92,7 @@ custom:
   seed:
     s3:
       TodosBucket:
-        - ./somedir/
+        emptyOnly: true # default false - seed only if target is empty
+        data:
+          - ./somedir/
 ```

@@ -29,12 +29,26 @@ class S3Resource {
 
 	async deploy() {
 		if (!this.options) return
-		for (const [bucketResourceId, dirs] of Object.entries(this.options)) {
-			if (!dirs.length) continue
+		for (const [bucketResourceId, options] of Object.entries(this.options)) {
+			const { emptyOnly, data } = options
+
+			if (!data.length) continue
 
 			const bucketName = this.buckets[bucketResourceId]
 
-			for (const dir of dirs) {
+			if (emptyOnly) {
+				const { Versions: versions } = await this.provider
+					.listObjectVersions({
+						Bucket: bucketName
+					})
+					.promise()
+				if (versions.length > 0) {
+					this.log(`Bucket '${bucketName}' - skipped because it's not empty`)
+					continue
+				}
+			}
+
+			for (const dir of data) {
 				const dirPath = path.resolve(process.cwd(), dir)
 				const files = await this._getFiles(dirPath)
 				this.log(`Bucket '${bucketName}' - uploading ${files.length} objects..`)

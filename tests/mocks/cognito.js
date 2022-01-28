@@ -19,6 +19,11 @@ class CognitoIdentityServiceProvider {
 			promise: async () => {}
 		}
 	}
+	listUsers() {
+		return {
+			promise: async () => {}
+		}
+	}
 }
 
 const awsProvider = {

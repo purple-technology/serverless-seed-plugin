@@ -23,6 +23,14 @@ describe('#dynamodb', () => {
 		const DynamoDbResource = require('../../src/resources/dynamodb')
 		const { args, record } = require('./../mocks/dynamodb')
 
+		const scanMock = jest
+			.spyOn(DocumentClient.prototype, 'scan')
+			.mockImplementation(() => ({
+				promise: async () => ({
+					Count: 0
+				})
+			}))
+
 		const batchWriteMock = jest
 			.spyOn(DocumentClient.prototype, 'batchWrite')
 			.mockImplementation(() => ({
@@ -31,6 +39,7 @@ describe('#dynamodb', () => {
 
 		args.options = {
 			TableLogicalId: {
+				emptyOnly: true,
 				data: [record]
 			}
 		}
@@ -49,11 +58,50 @@ describe('#dynamodb', () => {
 			"Table 'table_name' - finished!"
 		)
 
+		expect(scanMock).toHaveBeenCalledWith({
+			TableName: 'table_name',
+			Select: 'COUNT'
+		})
+
 		expect(batchWriteMock).toHaveBeenCalledTimes(1)
 		expect(batchWriteMock).toHaveBeenNthCalledWith(1, {
 			RequestItems: {
 				table_name: [{ PutRequest: { Item: record } }]
 			}
+		})
+	})
+
+	it('should skip seed when target is not empty', async () => {
+		const DynamoDbResource = require('../../src/resources/dynamodb')
+		const { args, record } = require('./../mocks/dynamodb')
+
+		const scanMock = jest
+			.spyOn(DocumentClient.prototype, 'scan')
+			.mockImplementation(() => ({
+				promise: async () => ({
+					Count: 1
+				})
+			}))
+
+		args.options = {
+			TableLogicalId: {
+				emptyOnly: true,
+				data: [record]
+			}
+		}
+
+		const resource = new DynamoDbResource(args)
+
+		expect(await resource.deploy()).toBeUndefined()
+
+		expect(args.log).toBeCalledTimes(1)
+		expect(args.log).toHaveBeenCalledWith(
+			"Table 'table_name' - skipped because it's not empty"
+		)
+
+		expect(scanMock).toHaveBeenCalledWith({
+			TableName: 'table_name',
+			Select: 'COUNT'
 		})
 	})
 
