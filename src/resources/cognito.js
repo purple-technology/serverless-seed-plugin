@@ -27,18 +27,35 @@ class CognitoResource {
 	async deploy() {
 		if (!this.options) return
 
-		for (const [logicalResourceId, users] of Object.entries(this.options)) {
-			if (!users.length) continue
+		for (const [logicalResourceId, options] of Object.entries(this.options)) {
+			const { emptyOnly, data } = options
+
+			if (!data.length) continue
 
 			const userPoolName = this.userPools[logicalResourceId]
 			const userPoolId = await this._findUserPoolId(logicalResourceId)
 
-			this.log(`UserPool '${userPoolName}' - seeding ${users.length} users..`)
+			if (emptyOnly) {
+				const { Users: users } = await this.identityProvider
+					.listUsers({
+						UserPoolId: userPoolId,
+						Limit: 1
+					})
+					.promise()
+				if (users.length > 0) {
+					this.log(
+						`UserPool '${userPoolName}' - skipped because it's not empty`
+					)
+					continue
+				}
+			}
+
+			this.log(`UserPool '${userPoolName}' - seeding ${data.length} users..`)
 			const stats = {
 				created: 0,
 				updated: 0
 			}
-			for (const { username, password, attributes, groups } of users) {
+			for (const { username, password, attributes, groups } of data) {
 				try {
 					await this.identityProvider
 						.adminCreateUser({

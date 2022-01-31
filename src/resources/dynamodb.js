@@ -56,7 +56,7 @@ class DynamoDbResource {
 		if (!this.options) return
 
 		for (const [tableId, options] of Object.entries(this.options)) {
-			const { data, clone, truncate } = options
+			const { data, clone, truncate, emptyOnly } = options
 
 			const { tableName, tableKeys } = this.tables[tableId]
 			if (!tableName) {
@@ -66,6 +66,20 @@ class DynamoDbResource {
 			if (typeof data !== 'object' && !clone) {
 				this.log(`Option data or clone is required for table ${tableName}`)
 				continue
+			}
+
+			if (emptyOnly) {
+				const { Count: count } = await this.documentClient
+					.scan({
+						TableName: tableName,
+						Select: 'COUNT'
+					})
+					.promise()
+
+				if (count > 0) {
+					this.log(`Table '${tableName}' - skipped because it's not empty`)
+					continue
+				}
 			}
 
 			if (truncate && (!clone || !clone.recreate)) {

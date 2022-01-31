@@ -38,9 +38,19 @@ describe('#cognito', () => {
 		)
 		jest.spyOn(CognitoIdentityServiceProvider.prototype, 'adminSetUserPassword')
 		jest.spyOn(CognitoIdentityServiceProvider.prototype, 'adminAddUserToGroup')
+		jest
+			.spyOn(CognitoIdentityServiceProvider.prototype, 'listUsers')
+			.mockImplementationOnce(() => ({
+				promise: () => ({
+					Users: []
+				})
+			}))
 
 		args.options = {
-			UserPooLogicalId: users
+			UserPooLogicalId: {
+				emptyOnly: true,
+				data: users
+			}
 		}
 		const resource = new CognitoResource(args)
 
@@ -64,6 +74,12 @@ describe('#cognito', () => {
 			'describeStackResource',
 			{ LogicalResourceId: 'UserPooLogicalId', StackName: 'test_stack_name' }
 		)
+		expect(
+			CognitoIdentityServiceProvider.prototype.listUsers
+		).toHaveBeenNthCalledWith(1, {
+			UserPoolId: 'TestUserPoolId',
+			Limit: 1
+		})
 		expect(
 			CognitoIdentityServiceProvider.prototype.adminCreateUser
 		).toHaveBeenCalledTimes(2)
@@ -125,6 +141,65 @@ describe('#cognito', () => {
 			GroupName: 'test_group',
 			UserPoolId: 'TestUserPoolId',
 			Username: users[1].username
+		})
+	})
+
+	it('skips seed when target is not empty', async () => {
+		const CognitoResource = require('../../src/resources/cognito')
+		const {
+			awsProvider,
+			CognitoIdentityServiceProvider,
+			args,
+			users
+		} = require('../mocks/cognito')
+
+		jest
+			.spyOn(awsProvider.naming, 'getStackName')
+			.mockImplementationOnce(() => 'test_stack_name')
+
+		jest.spyOn(awsProvider, 'request').mockImplementationOnce(async () => ({
+			StackResourceDetail: {
+				PhysicalResourceId: 'TestUserPoolId'
+			}
+		}))
+
+		jest
+			.spyOn(CognitoIdentityServiceProvider.prototype, 'listUsers')
+			.mockImplementationOnce(() => ({
+				promise: () => ({
+					Users: [{}]
+				})
+			}))
+
+		args.options = {
+			UserPooLogicalId: {
+				emptyOnly: true,
+				data: users
+			}
+		}
+		const resource = new CognitoResource(args)
+
+		expect(await resource.deploy()).toBeUndefined()
+
+		expect(args.log).toBeCalledTimes(1)
+		expect(args.log).toHaveBeenNthCalledWith(
+			1,
+			"UserPool 'test_user_pool' - skipped because it's not empty"
+		)
+
+		expect(awsProvider.naming.getStackName).toHaveBeenCalledTimes(1)
+		expect(awsProvider.request).toHaveBeenCalledTimes(1)
+		expect(awsProvider.request).toHaveBeenNthCalledWith(
+			1,
+			'CloudFormation',
+			'describeStackResource',
+			{ LogicalResourceId: 'UserPooLogicalId', StackName: 'test_stack_name' }
+		)
+		expect(
+			CognitoIdentityServiceProvider.prototype.listUsers
+		).toHaveBeenNthCalledWith(1, {
+			UserPoolId: 'TestUserPoolId',
+			Limit: 1
 		})
 	})
 })

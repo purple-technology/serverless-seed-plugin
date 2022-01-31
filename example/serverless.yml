@@ -21,6 +21,7 @@ custom:
   seed:
     dynamodb:
       TodosTable:
+        emptyOnly: ${env:SEED_EMPTY_ONLY, false}
         truncate: true
         data: ${file(./seed/dynamodb.yml)}
         clone:
@@ -29,10 +30,14 @@ custom:
             region: eu-central-1
           recreate: true
     cognito:
-      TodosUserPool: ${file(./seed/cognito.yml)}
+      TodosUserPool:
+        emptyOnly: ${env:SEED_EMPTY_ONLY, false}
+        data: ${file(./seed/cognito.yml)}
     s3:
       TodosBucket:
-        - ./seed/s3
+        emptyOnly: ${env:SEED_EMPTY_ONLY, false}
+        data:
+          - ./seed/s3
   tables:
     todos: ${self:service}-${self:provider.stage}-todos
   remover:
@@ -71,14 +76,14 @@ resources:
             AttributeDataType: String
             Mutable: true
             StringAttributeConstraints:
-              MinLength: 1
-              MaxLength: 2048
+              MinLength: "1"
+              MaxLength: "2048"
           - Name: immutableClientData
             AttributeDataType: String
             Mutable: false
             StringAttributeConstraints:
-              MinLength: 1
-              MaxLength: 2048
+              MinLength: "1"
+              MaxLength: "2048"
     TodosUserPoolGroup:
       Type: AWS::Cognito::UserPoolGroup
       Properties:
@@ -88,6 +93,8 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:service}-${self:provider.stage}-todos
+        VersioningConfiguration:
+          Status: 'Enabled'
   Outputs:
     TodosTableName:
       Value: { 'Ref': 'TodosTable' }

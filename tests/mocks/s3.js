@@ -4,6 +4,11 @@ class S3 {
 			promise: async () => {}
 		}
 	}
+	listObjectVersions() {
+		return {
+			promise: async () => {}
+		}
+	}
 }
 
 const awsProvider = {
